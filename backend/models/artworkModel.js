@@ -4,7 +4,6 @@ const db = require("../config/database");
 // GET ALL ARTWORKS
 // ==============================
 exports.getAllArtworks = async () => {
-
     const [rows] = await db.query(`
         SELECT
             a.artwork_id AS id,
@@ -25,7 +24,6 @@ exports.getAllArtworks = async () => {
             ON a.client_id = c.client_id
         ORDER BY a.artwork_id DESC
     `);
-
     return rows;
 };
 
@@ -33,7 +31,6 @@ exports.getAllArtworks = async () => {
 // GET ARTWORK BY ID
 // ==============================
 exports.getArtworkById = async (id) => {
-
     const [rows] = await db.query(`
         SELECT
             a.artwork_id AS id,
@@ -54,7 +51,6 @@ exports.getArtworkById = async (id) => {
             ON a.client_id = c.client_id
         WHERE a.artwork_id = ?
     `, [id]);
-
     return rows[0];
 };
 
@@ -62,23 +58,11 @@ exports.getArtworkById = async (id) => {
 // CREATE ARTWORK
 // ==============================
 exports.createArtwork = async (artwork) => {
-
     const sql = `
         INSERT INTO artworks
-        (
-            title,
-            medium,
-            client_id,
-            dimensions,
-            status,
-            price,
-            date_completed,
-            notes,
-            image
-        )
+        (title, medium, client_id, dimensions, status, price, date_completed, notes, image)
         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
     `;
-
     const values = [
         artwork.title,
         artwork.medium,
@@ -90,9 +74,7 @@ exports.createArtwork = async (artwork) => {
         artwork.notes,
         artwork.image || null
     ];
-
     const [result] = await db.query(sql, values);
-
     return result;
 };
 
@@ -100,7 +82,7 @@ exports.createArtwork = async (artwork) => {
 // UPDATE ARTWORK
 // ==============================
 exports.updateArtwork = async (id, artwork) => {
-
+    // Note: Ensure the 'artwork' object keys match the module definition in dashboard.html
     const sql = `
         UPDATE artworks
         SET
@@ -129,20 +111,22 @@ exports.updateArtwork = async (id, artwork) => {
         id
     ];
 
-    const [result] = await db.query(sql, values);
-
-    return result;
+    try {
+        const [result] = await db.query(sql, values);
+        return result;
+    } catch (error) {
+        console.error("Database Update Error:", error);
+        throw error;
+    }
 };
 
 // ==============================
 // DELETE ARTWORK
 // ==============================
 exports.deleteArtwork = async (id) => {
-
     const [result] = await db.query(
         "DELETE FROM artworks WHERE artwork_id = ?",
         [id]
     );
-
     return result;
 };

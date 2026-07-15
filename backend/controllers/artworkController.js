@@ -76,31 +76,31 @@ exports.createArtwork = async (req, res) => {
 
 };
 
-// ==============================
-// UPDATE ARTWORK
-// ==============================
+// artworkController.js - Updated Update Function
 exports.updateArtwork = async (req, res) => {
-
     try {
+        const id = req.params.id;
+        const data = req.body;
 
-        await artworkModel.updateArtwork(req.params.id, req.body);
+        console.log(`Updating Artwork ID ${id} with:`, data); // Check this in your server terminal
+
+        const result = await artworkModel.updateArtwork(id, data);
+
+        if (result.affectedRows === 0) {
+            return res.status(404).json({ success: false, message: "Artwork not found" });
+        }
 
         res.json({
             success: true,
             message: "Artwork Updated Successfully"
         });
-
     } catch (err) {
-
-        console.error(err);
-
+        console.error("Update Error:", err);
         res.status(500).json({
             success: false,
             message: err.message
         });
-
     }
-
 };
 
 // ==============================

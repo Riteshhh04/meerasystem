@@ -394,20 +394,25 @@ table.inv-table tfoot tr.inv-total-row td{ font-weight:700; font-size:15px; bord
 
 const MODULES = {
   artworks: {
-    label: 'Artworks', icon: '❀', group:'Portfolio',
+    label: 'Artworks', 
+    icon: '❀', 
+    group: 'Portfolio',
     fields: [
       {key:'title', label:'Artwork Title', type:'text', required:true},
       {key:'medium', label:'Medium', type:'select', options:['Resin Art','Flower Preservation','Resin Jewellery','Resin Coasters','Photo Frame','Keychain','Resin Clock','Resin Table','Custom Commission','Other'], default:'Resin Art'},
+      // Keep client_id as is because your model uses this key
       {key:'client_id', label:'Client', type:'select', options: () => (DB.clients || []).map(c => ({value: c.id, label: c.name}))},
       {key:'dimensions', label:'Dimensions', type:'text', placeholder:'e.g. 8in round'},
       {key:'status', label:'Status', type:'select', options:['Concept','Curing','Completed','Delivered'], default:'Concept'},
       {key:'price', label:'Price (₹)', type:'number', money:true},
-      {key:'dateCompleted', label:'Date Completed', type:'date'},
+      // CHANGED: Match the SQL column name 'date_completed'
+      {key:'date_completed', label:'Date Completed', type:'date'},
       {key:'notes', label:'Notes', type:'textarea'},
     ],
-    tableCols:['title','medium','client_id','status','price','dateCompleted'],
+    // Update tableCols to match the new keys
+    tableCols:['title','medium','client_id','status','price','date_completed'],
     statusColors:{status:{Concept:'neutral',Curing:'info',Completed:'warning',Delivered:'success'}},
-    emptyMsg:'No artworks logged yet. Add your first piece to start building the portfolio record.',
+    emptyMsg:'No artworks logged yet.',
     exportable:true
   },
   clients: {
@@ -1442,89 +1447,79 @@ async function saveModal() {
     }
 
     // ===================================
-    // ARTWORK MODULE (MYSQL)
+    // ARTWORK MODULE (MYSQL) — FULLY SYNCED
     // ===================================
-
     else if (moduleKey === "artworks") {
-
         try {
-
             if (id) {
-
+                // Ensure ID is passed for the PUT route
                 await fetch(`/api/artworks/${id}`, {
                     method: "PUT",
-                    headers: {
-                        "Content-Type": "application/json"
-                    },
+                    headers: { "Content-Type": "application/json" },
                     body: JSON.stringify(data)
                 });
-
             } else {
-
                 await fetch("/api/artworks", {
                     method: "POST",
-                    headers: {
-                        "Content-Type": "application/json"
-                    },
+                    headers: { "Content-Type": "application/json" },
                     body: JSON.stringify(data)
                 });
-
             }
 
+            // 1. Fetch the absolute latest state from the database
             const response = await fetch("/api/artworks");
             DB.artworks = await response.json();
 
+            // 2. Sync UI: Update whichever view the user is currently looking at
+            if (currentView === 'artworks') {
+                renderModuleView('artworks');
+            } else if (currentView === 'tasks') {
+                renderTasksView();
+            }
+            
+            // Also update dashboard if visible
+            if (currentView === 'dashboard') {
+                renderDashboard();
+            }
+
         } catch (err) {
-
-            console.error(err);
-            alert("Unable to connect to backend.");
+            console.error("Save failed:", err);
+            alert("Unable to save artwork to the database.");
             return;
-
         }
-
     }
 
     // ===================================
     // STAFF MODULE (MYSQL)
     // ===================================
 
+    // ===================================
+    // STAFF MODULE (MYSQL) — UPDATED
+    // ===================================
     else if (moduleKey === "staff") {
-
         try {
+            // Ensure data is sent with the correct structure
+            // If updating, include the id so the backend knows which record to change
+            const url = id ? `/api/staff/${id}` : "/api/staff";
+            const method = id ? "PUT" : "POST";
 
-            if (id) {
-
-                await fetch(`/api/staff/${id}`, {
-                    method: "PUT",
-                    headers: {
-                        "Content-Type": "application/json"
-                    },
-                    body: JSON.stringify(data)
-                });
-
-            } else {
-
-                await fetch("/api/staff", {
-                    method: "POST",
-                    headers: {
-                        "Content-Type": "application/json"
-                    },
-                    body: JSON.stringify(data)
-                });
-
-            }
+            await fetch(url, {
+                method: method,
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(data)
+            });
 
             const response = await fetch("/api/staff");
             DB.staff = await response.json();
-
+            
+            // Refresh UI
+            if (currentView === 'staff') renderModuleView('staff');
+            closeModal();
+            toast("Staff saved successfully");
         } catch (err) {
-
-            console.error(err);
-            alert("Unable to connect to backend.");
-            return;
-
+            console.error("Save failed:", err);
+            alert("Unable to save staff record.");
         }
-
     }
 
     // ===================================
@@ -1937,28 +1932,31 @@ async function onDropArtwork(e, col){
 
   if(artwork && artwork.status !== col){
     const oldStatus = artwork.status;
-    artwork.status = col; // Optimistic UI update for instant snappiness
+    artwork.status = col; 
+    
+    // UI Update immediately
     renderTasksView();
 
     try {
-      // 1. Send the updated status directly to MySQL!
       await fetch(`/api/artworks/${id}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(artwork)
       });
       
-      // 2. Fetch the fresh database state just to be safe
+      // CRITICAL: Fetch fresh list from server so all views (table & board) stay in sync
       const response = await fetch("/api/artworks");
       DB.artworks = await response.json();
       
       toast(`Moved to ${col}`);
       
+      // Re-render only if the user is currently looking at the board
+      if(currentView === 'tasks') renderTasksView();
     } catch (err) {
       console.error(err);
-      artwork.status = oldStatus; // Revert UI if the server crashed
+      artwork.status = oldStatus; // Revert
       renderTasksView();
-      alert("Failed to update artwork status in the database.");
+      alert("Failed to update status.");
     }
   }
 }
@@ -2536,11 +2534,32 @@ async function paySalary(staffId){
 
 }
 
-function unpaySalary(staffId){
-  const rec = getSalaryRecord(staffId, payrollMonth);
-  if(rec && rec.advanceApplied){ reverseAdvanceRecovery(rec.advanceApplied); }
-  upsertSalary(staffId, {status:'Unpaid',paidDate:'',advanceApplied:[]});
-  renderPayroll();
+async function unpaySalary(staffId) {
+    const rec = getSalaryRecord(staffId, payrollMonth);
+    if (!rec) return;
+
+    if (!confirm("Are you sure you want to undo this payment?")) return;
+
+    try {
+        // 1. Delete the record from MySQL
+        await fetch(`/api/payroll/${rec.id}`, { method: "DELETE" });
+
+        // 2. Handle Advance Recovery reversal if applicable
+        if (rec.advanceApplied) {
+            reverseAdvanceRecovery(rec.advanceApplied);
+        }
+
+        // 3. Refresh local DB.payroll state
+        const response = await fetch("/api/payroll");
+        DB.payroll = await response.json();
+
+        // 4. Re-render payroll view
+        renderPayroll();
+        toast("Payment undone");
+    } catch (err) {
+        console.error("Undo failed:", err);
+        alert("Failed to undo payment. Check server logs.");
+    }
 }
 function payAllSalaries(){
   const active = (DB.staff||[]).filter(s=>s.status==='Active');
