@@ -251,18 +251,28 @@ input.pay-inp:disabled{ background:transparent; border-color:transparent; color:
   /* Show the toggle button */
   #menuToggle { display: inline-flex !important; }
   
-  /* Update sidebar to be a toggleable overlay instead of 'display: none' */
+  /* Sidebar as a sliding overlay */
   .sidebar { 
-    display: none; 
+    display: none; /* Hidden by default */
     position: fixed; 
-    left: 0; 
+    left: -250px; /* Start off-screen */
     top: 0; 
+    bottom: 0;
+    width: 246px;
     z-index: 1000; 
     box-shadow: var(--shadow); 
+    background: var(--surface-2);
+    transition: left 0.3s ease; /* Enables the smooth slide */
   }
-  .sidebar.active { display: flex; }
+
+  /* When active, display flex and slide into view */
+  .sidebar.active { 
+    display: flex; 
+    left: 0; 
+  }
   
-  .grid-4,.grid-3,.grid-2{ grid-template-columns:1fr; }
+  /* Stack grid items on mobile */
+  .grid-4, .grid-3, .grid-2 { grid-template-columns: 1fr; }
 }
 
 /* ---------- INVOICE DOCUMENT (printable) ---------- */
@@ -2850,18 +2860,32 @@ async function init(){
 }
 init();
 
+// Function to toggle sidebar
 function toggleSidebar() {
   const sidebar = document.querySelector('.sidebar');
   sidebar.classList.toggle('active');
 }
 
-// Optional: Close sidebar when clicking a nav item on mobile
+// Close sidebar smoothly when any nav-item is clicked
 document.querySelectorAll('.nav-item').forEach(item => {
   item.addEventListener('click', () => {
     if (window.innerWidth <= 880) {
-      document.querySelector('.sidebar').classList.remove('active');
+      const sidebar = document.querySelector('.sidebar');
+      sidebar.classList.remove('active'); // This triggers the CSS transition to close
     }
   });
+});
+
+// Optional: Close if clicking the background (outside the sidebar)
+document.addEventListener('click', (e) => {
+  const sidebar = document.querySelector('.sidebar');
+  const toggleBtn = document.getElementById('menuToggle');
+  
+  if (sidebar.classList.contains('active') && 
+      !sidebar.contains(e.target) && 
+      e.target !== toggleBtn) {
+    sidebar.classList.remove('active');
+  }
 });
 </script>
 </body>
