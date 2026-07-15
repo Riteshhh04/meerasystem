@@ -685,39 +685,39 @@ async function loadAll(){
     for(const key of Object.keys(MODULES)){
 
         if(key === "clients"){
-            const response = await fetch("http://localhost:3000/api/clients");
+            const response = await fetch("/api/clients");
             DB.clients = await response.json();
         }
         else if(key === "artworks"){
-            const response = await fetch("http://localhost:3000/api/artworks");
+            const response = await fetch("/api/artworks");
             DB.artworks = await response.json();
         }
         else if(key === "staff"){
-            const response = await fetch("http://localhost:3000/api/staff");
+            const response = await fetch("/api/staff");
             DB.staff = await response.json();
         }
         else if(key === "advances"){
-            const response = await fetch("http://localhost:3000/api/advances");
+            const response = await fetch("/api/advances");
             DB.advances = await response.json();
         }
         else if(key === "expenses"){
-            const response = await fetch("http://localhost:3000/api/expenses");
+            const response = await fetch("/api/expenses");
             DB.expenses = await response.json();
         }
         else if(key === "bills"){
-            const response = await fetch("http://localhost:3000/api/bills");
+            const response = await fetch("/api/bills");
             DB.bills = await response.json();
         }
         else if(key === "meetings"){
-            const response = await fetch("http://localhost:3000/api/meetings");
+            const response = await fetch("/api/meetings");
             DB.meetings = await response.json();
         }
         else if(key === "invoices"){
-            const response = await fetch("http://localhost:3000/api/invoices");
+            const response = await fetch("/api/invoices");
             DB.invoices = await response.json();
         }
         else if(key === "payments"){
-            const response = await fetch("http://localhost:3000/api/payments");
+            const response = await fetch("/api/payments");
             DB.payments = await response.json();
         }
         else{
@@ -727,7 +727,7 @@ async function loadAll(){
 
     // 2. Fetch Payroll OUTSIDE the loop
     try {
-        const response = await fetch("http://localhost:3000/api/payroll");
+        const response = await fetch("/api/payroll");
         DB.payroll = await response.json();
     } catch (err) {
         console.error("Failed to fetch payroll", err);
@@ -951,11 +951,11 @@ async function deleteRecord(moduleKey, id) {
 
         try {
 
-            await fetch(`http://localhost:3000/api/clients/${id}`, {
+            await fetch(`/api/clients/${id}`, {
                 method: "DELETE"
             });
 
-            const response = await fetch("http://localhost:3000/api/clients");
+            const response = await fetch("/api/clients");
 
             DB.clients = await response.json();
 
@@ -978,11 +978,11 @@ async function deleteRecord(moduleKey, id) {
 
         try {
 
-            await fetch(`http://localhost:3000/api/artworks/${id}`, {
+            await fetch(`/api/artworks/${id}`, {
                 method: "DELETE"
             });
 
-            const response = await fetch("http://localhost:3000/api/artworks");
+            const response = await fetch("/api/artworks");
 
             DB.artworks = await response.json();
 
@@ -1006,11 +1006,11 @@ async function deleteRecord(moduleKey, id) {
 
         try {
 
-            await fetch(`http://localhost:3000/api/staff/${id}`, {
+            await fetch(`/api/staff/${id}`, {
                 method: "DELETE"
             });
 
-            const response = await fetch("http://localhost:3000/api/staff");
+            const response = await fetch("/api/staff");
 
             DB.staff = await response.json();
 
@@ -1034,13 +1034,13 @@ async function deleteRecord(moduleKey, id) {
 
         try{
 
-            await fetch(`http://localhost:3000/api/advances/${id}`,{
+            await fetch(`/api/advances/${id}`,{
 
                 method:"DELETE"
 
             });
 
-            const response = await fetch("http://localhost:3000/api/advances");
+            const response = await fetch("/api/advances");
 
             DB.advances = await response.json();
 
@@ -1065,13 +1065,13 @@ async function deleteRecord(moduleKey, id) {
 
         try{
 
-            await fetch(`http://localhost:3000/api/payroll/${id}`,{
+            await fetch(`/api/payroll/${id}`,{
 
                 method:"DELETE"
 
             });
 
-            const response = await fetch("http://localhost:3000/api/payroll");
+            const response = await fetch("/api/payroll");
 
             DB.payroll = await response.json();
 
@@ -1092,10 +1092,10 @@ async function deleteRecord(moduleKey, id) {
     // ===================================
     else if(moduleKey === "expenses"){
         try{
-            await fetch(`http://localhost:3000/api/expenses/${id}`,{
+            await fetch(`/api/expenses/${id}`,{
                 method:"DELETE"
             });
-            const response = await fetch("http://localhost:3000/api/expenses");
+            const response = await fetch("/api/expenses");
             DB.expenses = await response.json();
         }catch(err){
             console.error(err);
@@ -1109,10 +1109,10 @@ async function deleteRecord(moduleKey, id) {
     // ===================================
     else if(moduleKey === "bills"){
         try{
-            await fetch(`http://localhost:3000/api/bills/${id}`,{
+            await fetch(`/api/bills/${id}`,{
                 method:"DELETE"
             });
-            const response = await fetch("http://localhost:3000/api/bills");
+            const response = await fetch("/api/bills");
             DB.bills = await response.json();
         }catch(err){
             console.error(err);
@@ -1126,10 +1126,10 @@ async function deleteRecord(moduleKey, id) {
     // ===================================
     else if(moduleKey === "meetings"){
         try{
-            await fetch(`http://localhost:3000/api/meetings/${id}`,{
+            await fetch(`/api/meetings/${id}`,{
                 method:"DELETE"
             });
-            const response = await fetch("http://localhost:3000/api/meetings");
+            const response = await fetch("/api/meetings");
             DB.meetings = await response.json();
         }catch(err){
             console.error(err);
@@ -1143,8 +1143,8 @@ async function deleteRecord(moduleKey, id) {
     // ===================================
     else if(moduleKey === "invoices"){
         try{
-            await fetch(`http://localhost:3000/api/invoices/${id}`,{ method:"DELETE" });
-            const response = await fetch("http://localhost:3000/api/invoices");
+            await fetch(`/api/invoices/${id}`,{ method:"DELETE" });
+            const response = await fetch("/api/invoices");
             DB.invoices = await response.json();
         }catch(err){
             console.error(err);
@@ -1158,8 +1158,8 @@ async function deleteRecord(moduleKey, id) {
     // ===================================
     else if(moduleKey === "payments"){
         try{
-            await fetch(`http://localhost:3000/api/payments/${id}`,{ method:"DELETE" });
-            const response = await fetch("http://localhost:3000/api/payments");
+            await fetch(`/api/payments/${id}`,{ method:"DELETE" });
+            const response = await fetch("/api/payments");
             DB.payments = await response.json();
         }catch(err){
             console.error(err);
@@ -1384,7 +1384,7 @@ async function saveModal() {
 
             if (id) {
 
-                await fetch(`http://localhost:3000/api/clients/${id}`, {
+                await fetch(`/api/clients/${id}`, {
                     method: "PUT",
                     headers: {
                         "Content-Type": "application/json"
@@ -1394,7 +1394,7 @@ async function saveModal() {
 
             } else {
 
-                await fetch("http://localhost:3000/api/clients", {
+                await fetch("/api/clients", {
                     method: "POST",
                     headers: {
                         "Content-Type": "application/json"
@@ -1404,7 +1404,7 @@ async function saveModal() {
 
             }
 
-            const response = await fetch("http://localhost:3000/api/clients");
+            const response = await fetch("/api/clients");
             DB.clients = await response.json();
 
         } catch (err) {
@@ -1427,7 +1427,7 @@ async function saveModal() {
 
             if (id) {
 
-                await fetch(`http://localhost:3000/api/artworks/${id}`, {
+                await fetch(`/api/artworks/${id}`, {
                     method: "PUT",
                     headers: {
                         "Content-Type": "application/json"
@@ -1437,7 +1437,7 @@ async function saveModal() {
 
             } else {
 
-                await fetch("http://localhost:3000/api/artworks", {
+                await fetch("/api/artworks", {
                     method: "POST",
                     headers: {
                         "Content-Type": "application/json"
@@ -1447,7 +1447,7 @@ async function saveModal() {
 
             }
 
-            const response = await fetch("http://localhost:3000/api/artworks");
+            const response = await fetch("/api/artworks");
             DB.artworks = await response.json();
 
         } catch (err) {
@@ -1470,7 +1470,7 @@ async function saveModal() {
 
             if (id) {
 
-                await fetch(`http://localhost:3000/api/staff/${id}`, {
+                await fetch(`/api/staff/${id}`, {
                     method: "PUT",
                     headers: {
                         "Content-Type": "application/json"
@@ -1480,7 +1480,7 @@ async function saveModal() {
 
             } else {
 
-                await fetch("http://localhost:3000/api/staff", {
+                await fetch("/api/staff", {
                     method: "POST",
                     headers: {
                         "Content-Type": "application/json"
@@ -1490,7 +1490,7 @@ async function saveModal() {
 
             }
 
-            const response = await fetch("http://localhost:3000/api/staff");
+            const response = await fetch("/api/staff");
             DB.staff = await response.json();
 
         } catch (err) {
@@ -1517,7 +1517,7 @@ async function saveModal() {
 
             if (id) {
 
-                await fetch(`http://localhost:3000/api/advances/${id}`, {
+                await fetch(`/api/advances/${id}`, {
 
                     method: "PUT",
 
@@ -1531,7 +1531,7 @@ async function saveModal() {
 
             } else {
 
-                await fetch("http://localhost:3000/api/advances", {
+                await fetch("/api/advances", {
 
                     method: "POST",
 
@@ -1545,7 +1545,7 @@ async function saveModal() {
 
             }
 
-            const response = await fetch("http://localhost:3000/api/advances");
+            const response = await fetch("/api/advances");
 
             DB.advances = await response.json();
 
@@ -1571,7 +1571,7 @@ async function saveModal() {
 
             if(id){
 
-                await fetch(`http://localhost:3000/api/payroll/${id}`,{
+                await fetch(`/api/payroll/${id}`,{
 
                     method:"PUT",
 
@@ -1585,7 +1585,7 @@ async function saveModal() {
 
             }else{
 
-                await fetch("http://localhost:3000/api/payroll",{
+                await fetch("/api/payroll",{
 
                     method:"POST",
 
@@ -1599,7 +1599,7 @@ async function saveModal() {
 
             }
 
-            const response = await fetch("http://localhost:3000/api/payroll");
+            const response = await fetch("/api/payroll");
 
             DB.payroll = await response.json();
 
@@ -1621,19 +1621,19 @@ async function saveModal() {
     else if(moduleKey === "expenses"){
         try{
             if(id){
-                await fetch(`http://localhost:3000/api/expenses/${id}`,{
+                await fetch(`/api/expenses/${id}`,{
                     method:"PUT",
                     headers:{"Content-Type":"application/json"},
                     body:JSON.stringify(data)
                 });
             }else{
-                await fetch("http://localhost:3000/api/expenses",{
+                await fetch("/api/expenses",{
                     method:"POST",
                     headers:{"Content-Type":"application/json"},
                     body:JSON.stringify(data)
                 });
             }
-            const response = await fetch("http://localhost:3000/api/expenses");
+            const response = await fetch("/api/expenses");
             DB.expenses = await response.json();
         }catch(err){
             console.error(err);
@@ -1648,19 +1648,19 @@ async function saveModal() {
     else if(moduleKey === "bills"){
         try{
             if(id){
-                await fetch(`http://localhost:3000/api/bills/${id}`,{
+                await fetch(`/api/bills/${id}`,{
                     method:"PUT",
                     headers:{"Content-Type":"application/json"},
                     body:JSON.stringify(data)
                 });
             }else{
-                await fetch("http://localhost:3000/api/bills",{
+                await fetch("/api/bills",{
                     method:"POST",
                     headers:{"Content-Type":"application/json"},
                     body:JSON.stringify(data)
                 });
             }
-            const response = await fetch("http://localhost:3000/api/bills");
+            const response = await fetch("/api/bills");
             DB.bills = await response.json();
         }catch(err){
             console.error(err);
@@ -1676,19 +1676,19 @@ async function saveModal() {
     else if(moduleKey === "meetings"){
         try{
             if(id){
-                await fetch(`http://localhost:3000/api/meetings/${id}`,{
+                await fetch(`/api/meetings/${id}`,{
                     method:"PUT",
                     headers:{"Content-Type":"application/json"},
                     body:JSON.stringify(data)
                 });
             }else{
-                await fetch("http://localhost:3000/api/meetings",{
+                await fetch("/api/meetings",{
                     method:"POST",
                     headers:{"Content-Type":"application/json"},
                     body:JSON.stringify(data)
                 });
             }
-            const response = await fetch("http://localhost:3000/api/meetings");
+            const response = await fetch("/api/meetings");
             DB.meetings = await response.json();
         }catch(err){
             console.error(err);
@@ -1703,19 +1703,19 @@ async function saveModal() {
     else if(moduleKey === "invoices"){
         try{
             if(id){
-                await fetch(`http://localhost:3000/api/invoices/${id}`,{
+                await fetch(`/api/invoices/${id}`,{
                     method:"PUT",
                     headers:{"Content-Type":"application/json"},
                     body:JSON.stringify(data)
                 });
             }else{
-                await fetch("http://localhost:3000/api/invoices",{
+                await fetch("/api/invoices",{
                     method:"POST",
                     headers:{"Content-Type":"application/json"},
                     body:JSON.stringify(data)
                 });
             }
-            const response = await fetch("http://localhost:3000/api/invoices");
+            const response = await fetch("/api/invoices");
             DB.invoices = await response.json();
         }catch(err){
             console.error(err);
@@ -1730,19 +1730,19 @@ async function saveModal() {
     else if(moduleKey === "payments"){
         try{
             if(id){
-                await fetch(`http://localhost:3000/api/payments/${id}`,{
+                await fetch(`/api/payments/${id}`,{
                     method:"PUT",
                     headers:{"Content-Type":"application/json"},
                     body:JSON.stringify(data)
                 });
             }else{
-                await fetch("http://localhost:3000/api/payments",{
+                await fetch("/api/payments",{
                     method:"POST",
                     headers:{"Content-Type":"application/json"},
                     body:JSON.stringify(data)
                 });
             }
-            const response = await fetch("http://localhost:3000/api/payments");
+            const response = await fetch("/api/payments");
             DB.payments = await response.json();
         }catch(err){
             console.error(err);
@@ -1918,14 +1918,14 @@ async function onDropArtwork(e, col){
 
     try {
       // 1. Send the updated status directly to MySQL!
-      await fetch(`http://localhost:3000/api/artworks/${id}`, {
+      await fetch(`/api/artworks/${id}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(artwork)
       });
       
       // 2. Fetch the fresh database state just to be safe
-      const response = await fetch("http://localhost:3000/api/artworks");
+      const response = await fetch("/api/artworks");
       DB.artworks = await response.json();
       
       toast(`Moved to ${col}`);
@@ -2446,7 +2446,7 @@ async function paySalary(staffId){
 
             await fetch(
 
-                `http://localhost:3000/api/payroll/${existing.id}`,
+                `/api/payroll/${existing.id}`,
 
                 {
 
@@ -2468,7 +2468,7 @@ async function paySalary(staffId){
 
             await fetch(
 
-                "http://localhost:3000/api/payroll",
+                "/api/payroll",
 
                 {
 
@@ -2490,7 +2490,7 @@ async function paySalary(staffId){
 
         const response = await fetch(
 
-            "http://localhost:3000/api/payroll"
+            "/api/payroll"
 
         );
 
