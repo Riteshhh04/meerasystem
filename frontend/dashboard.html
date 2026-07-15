@@ -248,7 +248,20 @@ input.pay-inp:disabled{ background:transparent; border-color:transparent; color:
 .toast::before{ content:'✓'; color:var(--rose); margin-right:8px; font-weight:700; }
 
 @media(max-width:880px){
-  .sidebar{ display:none; }
+  /* Show the toggle button */
+  #menuToggle { display: inline-flex !important; }
+  
+  /* Update sidebar to be a toggleable overlay instead of 'display: none' */
+  .sidebar { 
+    display: none; 
+    position: fixed; 
+    left: 0; 
+    top: 0; 
+    z-index: 1000; 
+    box-shadow: var(--shadow); 
+  }
+  .sidebar.active { display: flex; }
+  
   .grid-4,.grid-3,.grid-2{ grid-template-columns:1fr; }
 }
 
@@ -327,6 +340,8 @@ table.inv-table tfoot tr.inv-total-row td{ font-weight:700; font-size:15px; bord
 
   <div class="main">
     <div class="topbar">
+      <button class="btn btn-ghost" onclick="toggleSidebar()" id="menuToggle" style="display:none; margin-right: 10px;">☰</button>
+      
       <div class="title-wrap">
         <div class="eyebrow" id="topEyebrow">Overview</div>
         <h1 id="topTitle">Dashboard</h1>
@@ -334,7 +349,6 @@ table.inv-table tfoot tr.inv-total-row td{ font-weight:700; font-size:15px; bord
       <div class="topbar-actions" id="topbarActions"></div>
     </div>
     <div class="content" id="content"></div>
-  </div>
 </div>
 
 <div class="modal-overlay" id="modalOverlay">
@@ -2835,6 +2849,20 @@ async function init(){
   wireGlobalUX();
 }
 init();
+
+function toggleSidebar() {
+  const sidebar = document.querySelector('.sidebar');
+  sidebar.classList.toggle('active');
+}
+
+// Optional: Close sidebar when clicking a nav item on mobile
+document.querySelectorAll('.nav-item').forEach(item => {
+  item.addEventListener('click', () => {
+    if (window.innerWidth <= 880) {
+      document.querySelector('.sidebar').classList.remove('active');
+    }
+  });
+});
 </script>
 </body>
 </html>
