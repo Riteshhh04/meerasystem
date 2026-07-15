@@ -2,53 +2,6 @@ CREATE DATABASE art_management;
 
 USE art_management;
 
-CREATE TABLE artworks (
-    artwork_id INT AUTO_INCREMENT PRIMARY KEY,
-
-    title VARCHAR(255) NOT NULL,
-
-    medium ENUM(
-        'Resin Art',
-        'Flower Preservation',
-        'Resin Jewellery',
-        'Resin Coasters',
-        'Photo Frame',
-        'Keychain',
-        'Resin Clock',
-        'Resin Table',
-        'Custom Commission',
-        'Other'
-    ) NOT NULL DEFAULT 'Resin Art',
-
-    client_id INT NULL,
-
-    dimensions VARCHAR(100),
-
-    status ENUM(
-        'Concept',
-        'Curing',
-        'Completed',
-        'Delivered'
-    ) NOT NULL DEFAULT 'Concept',
-
-    price DECIMAL(10,2) DEFAULT 0.00,
-
-    date_completed DATE,
-
-    notes TEXT,
-
-    image VARCHAR(255),
-
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-
-    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-        ON UPDATE CURRENT_TIMESTAMP,
-
-    FOREIGN KEY (client_id)
-        REFERENCES clients(client_id)
-        ON DELETE SET NULL
-);
-
 CREATE TABLE clients (
     client_id INT AUTO_INCREMENT PRIMARY KEY,
 
@@ -114,6 +67,53 @@ CREATE TABLE users (
 
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
         ON UPDATE CURRENT_TIMESTAMP
+);
+
+CREATE TABLE artworks (
+    artwork_id INT AUTO_INCREMENT PRIMARY KEY,
+
+    title VARCHAR(255) NOT NULL,
+
+    medium ENUM(
+        'Resin Art',
+        'Flower Preservation',
+        'Resin Jewellery',
+        'Resin Coasters',
+        'Photo Frame',
+        'Keychain',
+        'Resin Clock',
+        'Resin Table',
+        'Custom Commission',
+        'Other'
+    ) NOT NULL DEFAULT 'Resin Art',
+
+    client_id INT NULL,
+
+    dimensions VARCHAR(100),
+
+    status ENUM(
+        'Concept',
+        'Curing',
+        'Completed',
+        'Delivered'
+    ) NOT NULL DEFAULT 'Concept',
+
+    price DECIMAL(10,2) DEFAULT 0.00,
+
+    date_completed DATE,
+
+    notes TEXT,
+
+    image VARCHAR(255),
+
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+        ON UPDATE CURRENT_TIMESTAMP,
+
+    FOREIGN KEY (client_id)
+        REFERENCES clients(client_id)
+        ON DELETE SET NULL
 );
 
 CREATE TABLE staff (
@@ -441,23 +441,6 @@ CREATE TABLE payroll (
         ON UPDATE CASCADE
 );
 
-SELECT * FROM clients;
-
-SELECT * FROM artworks;
-
-SELECT * FROM staff;
-
-SELECT * FROM advances;
-
-SELECT * FROM payroll;
-
-SELECT * FROM expenses;
-
-SELECT * FROM bills;
-
-SELECT * FROM meetings;
-
-DROP TABLE meetings;
 
 CREATE TABLE meetings (
     meeting_id INT AUTO_INCREMENT PRIMARY KEY,
@@ -477,7 +460,5 @@ CREATE TABLE meetings (
         ON UPDATE CASCADE
 );
 
-SELECT * FROM meetings;
 
-SELECT * FROM invoices;
 
