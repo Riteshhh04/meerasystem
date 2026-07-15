@@ -280,30 +280,7 @@ CREATE TABLE bills (
 );
 
 
-CREATE TABLE meetings (
-    meeting_id INT AUTO_INCREMENT PRIMARY KEY,
 
-    title VARCHAR(150) NOT NULL,
-
-    with_whom VARCHAR(150),
-
-    meeting_date DATE NOT NULL,
-
-    meeting_time TIME,
-
-    mode ENUM(
-        'In-person',
-        'Call',
-        'Video'
-    ) NOT NULL DEFAULT 'Call',
-
-    notes TEXT,
-
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-
-    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-        ON UPDATE CURRENT_TIMESTAMP
-);
 
 CREATE TABLE invoices (
     invoice_id INT AUTO_INCREMENT PRIMARY KEY,
